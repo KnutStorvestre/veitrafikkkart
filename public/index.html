@@ -1,5 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
+<div>
+  <p>I believe in Jesus</p>
+</div>
   <head>
     <meta charset="utf-8" />
     <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
@@ -29,6 +32,29 @@
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/7.11.0/firebase-app.js"></script>
+
+    <!-- TODO: Add SDKs for Firebase products that you want to use
+         https://firebase.google.com/docs/web/setup#available-libraries -->
+    <script src="https://www.gstatic.com/firebasejs/7.11.0/firebase-analytics.js"></script>
+
+    <script>
+      // Your web app's Firebase configuration
+      var firebaseConfig = {
+        apiKey: "AIzaSyDop8SvuITaKeWvxZK7fOiOLXWEPVU2uik",
+        authDomain: "veitrafikk-kart4.firebaseapp.com",
+        databaseURL: "https://veitrafikk-kart4.firebaseio.com",
+        projectId: "veitrafikk-kart4",
+        storageBucket: "veitrafikk-kart4.appspot.com",
+        messagingSenderId: "549360792341",
+        appId: "1:549360792341:web:8766270393aaa9428a2f1c",
+        measurementId: "G-2M8QC34TE2"
+      };
+      // Initialize Firebase
+      firebase.initializeApp(firebaseConfig);
+      firebase.analytics();
+    </script>
     <!--
       This HTML file is a template.
       If you open it directly in the browser, you will see an empty page.
