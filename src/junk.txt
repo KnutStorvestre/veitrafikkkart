@@ -1,0 +1,11 @@
+export const getUserDecima = functions.https.onRequest((req, res) => {
+ const promise = admin.firestore().doc('users/Decima').get()
+ const p2 = promise.then(snapshot => {
+  const data = snapshot.data();
+  res.send(data)
+     });
+ p2.catch(error => {
+  console.log(error)
+  res.status(500).send(error)
+ })
+});
