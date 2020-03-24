@@ -2,15 +2,35 @@ import * as functions from 'firebase-functions';
 import * as admin from "firebase-admin";
 admin.initializeApp();
 
-exports.createNewUser = functions.https.onRequest((req, res:any | undefined) => {
 
-    if (req.method !== 'POST')
-        return res.status(400).json({error: 'MMM'});
-    /*
-    if (req.method !== 'POST'){
+
+exports.createScream = functions.https.onRequest((req, res:any | undefined) => {
+
+    if (req.method != 'POST'){
         return res.status(400).json({ error: 'Method not allowed'});
     }
-     */
+    const newScream = {
+        first: req.body.body,
+        userHandle: req.body.userHandle,
+        time: admin.firestore.Timestamp.fromDate(new Date())
+    };
+
+    admin
+        .firestore()
+        .collection('screams')
+        .add(newScream)
+        .then(doc => {
+            res.json({ message: `document ${doc.id} created successfully`});
+        })
+        .catch((err) => {
+            res.status(500).json({ error: 'something went wrong'});
+            console.error(err)
+        })
+});
+
+exports.createNewUser = functions.https.onRequest((req, res:any | undefined) => {
+    if (req.method !== 'POST')
+        return res.status(400).json({error: 'MMM'});
 
     const newUser = {
         first: req.body.body,
