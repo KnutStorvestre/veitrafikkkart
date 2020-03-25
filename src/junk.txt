@@ -28,3 +28,43 @@ export const getUserDecima = functions.https.onRequest((req, res) => {
         </a>
       </header>
     </div>
+
+
+
+export const getUsers = functions.https.onRequest((req, res) => {
+ admin.firestore().collection('users').get()
+     .then((data => {
+      let scream:any = [];
+      data.forEach((doc) => {
+       scream.push(doc.data())
+      });
+      return res.json(scream)
+     }))
+     .catch((err) => console.log(err))
+});
+
+export const getUserDecima = functions.https.onRequest((req, res) => {
+ admin.firestore().doc('users/Decima').get()
+ .then(snapshot => {
+  const data = snapshot.data();
+  res.send(data)
+     })
+ .catch(error => {
+  console.log(error);
+  res.status(500).send(error)
+ })
+});
+
+
+//denne filen har ingen funksjon
+let db = {
+    screams: [
+        {
+            userHandle: 'user',
+            body: 'this is the scream body',
+            createdAt: '2020-03-24T18:31:00.421Z',
+            likeCount: 5,
+            commentCount: 2
+        }
+    ]
+}
