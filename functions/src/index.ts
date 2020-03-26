@@ -40,6 +40,7 @@ app.get('/screams',(req:undefined, res:undefined | any) => {
         .catch((err) => console.log(err));
 });
 
+
 app.post('/scream',(req:any, res:any | undefined) => {
     const newScream = {
         body: req.body.body,
@@ -82,6 +83,22 @@ exports.createNewUser = functions.https.onRequest((req, res:any | undefined) => 
         })
 });
 
+const isEmail = (email:any) => {
+    const regEx = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    if (email.match(regEx))
+        return true;
+    else
+        return false;
+
+};
+
+const isEmpty = (string:any) => {
+    if (string.trim() === '')
+        return true;
+    else
+        return false;
+}
+
 app.post('/signup',(req:any,res:any) => {
     const newUser = {
             email: req.body.email,
@@ -90,6 +107,28 @@ app.post('/signup',(req:any,res:any) => {
             handle: req.body.handle
     };
 
+    interface LooseObject {
+        [key: string]: any
+    }
+
+    var errors: LooseObject = {};
+
+        if (isEmpty(newUser.email)){
+        errors.email = 'Email must not be empty'
+    }
+    else if (!isEmail(newUser.email)){
+        errors.email = 'Must be valid email address'
+    }
+
+    if (isEmpty(newUser.password))
+        errors.password = 'Must not be empty';
+    if (newUser.password !== newUser.confirmPassword)
+        errors.confirmPassword = 'Passwords must match';
+    if (isEmpty(newUser.handle))
+        errors.handle = 'Must not be empty';
+
+    if (Object.keys(errors).length > 0)
+        return res.status(400).json(errors);
     //validate data
     let token:any, userId:any;
     db.doc(`/users/${newUser.handle}`).get()
