@@ -40,11 +40,44 @@ app.get('/screams',(req:undefined, res:undefined | any) => {
         .catch((err) => console.log(err));
 });
 
+//middle ware
+const FBAuth = (req:any, res:any, next:any) => {
+    let idToken;
+    if(req.headers.authorization && req.headers.authorization.startsWith('Bearer ')){
+        idToken = req.headers.authorization.split('Bearer ')[1];
+    }
+    else {
+        console.log('No token found');
+        return res.status(403).json({ error: 'Unauthrozed'} )
+    }
 
-app.post('/scream',(req:any, res:any | undefined) => {
+    admin.auth().verifyIdToken(idToken)
+        .then(decodedToken => {
+            req.user = decodedToken;
+            console.log(decodedToken);
+            return db.collection('users')
+                .where('userId','==', req.user.uid)
+                .limit(1)
+                .get();
+        })
+        .then(data => {
+            req.user.handle = data.docs[0].data().handle;
+            return next();
+        })
+        .catch(err => {
+            console.error('Error while verifying token ', err);
+            return res.status(403).json(err);
+        })
+};
+
+app.post('/scream', FBAuth,(req:any, res:any | undefined) => {
+    if (req.body.body.trim() === ''){
+        return res.status(400).json({ body: 'Body must not be empty' });
+    }                          
+
     const newScream = {
         body: req.body.body,
-        userHandle: req.body.userHandle,
+        userHandle: req.user.handle,
         //turns date into string
         createdAt: new Date().toISOString()
         //time: admin.firestore.Timestamp.fromDate(new Date())
