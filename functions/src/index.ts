@@ -111,10 +111,10 @@ app.post('/signup',(req:any,res:any) => {
         [key: string]: any
     }
 
-    var errors: LooseObject = {};
+    let errors: LooseObject = {};
 
-        if (isEmpty(newUser.email)){
-        errors.email = 'Email must not be empty'
+    if (isEmpty(newUser.email)){
+    errors.email = 'Email must not be empty'
     }
     else if (!isEmail(newUser.email)){
         errors.email = 'Must be valid email address'
@@ -168,8 +168,38 @@ app.post('/signup',(req:any,res:any) => {
             }
             else {
                 return res.status(500).json({ error: err.code})
-
             }
+        })
+});
+
+app.post('/login', (req:any, res:any) => {
+    const user = {
+        email: req.body.email,
+        password: req.body.password
+    };
+    //res.status(201).json(`hello ${user.email}`)
+    let errors: {[k: string]: any} = {};
+
+    if (isEmpty(user.email))
+        errors.email = 'Must not be empty';
+    if (isEmpty(user.password))
+        errors.password = 'Must not be empty';
+
+    if (Object.keys(errors).length > 0)
+        return res.status(400).json(errors);
+
+    firebase
+        .auth()
+        .signInWithEmailAndPassword(user.email, user.password)
+        .then((data:any) => {
+            return data.user.getIdToken();
+        })
+        .then((token:any) => {
+            return res.json({ token });
+        })
+        .catch((err:any) => {
+            console.error(err);
+            return res.status(500).json({ error: err.code })
         })
 });
 
