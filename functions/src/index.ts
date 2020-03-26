@@ -1,22 +1,56 @@
 import * as functions from 'firebase-functions';
 import * as admin from "firebase-admin";
+const app = require('express')();
 admin.initializeApp();
 
+const firebaseConfig = {
+    apiKey: "AIzaSyDop8SvuITaKeWvxZK7fOiOLXWEPVU2uik",
+    authDomain: "veitrafikk-kart4.firebaseapp.com",
+    databaseURL: "https://veitrafikk-kart4.firebaseio.com",
+    projectId: "veitrafikk-kart4",
+    storageBucket: "veitrafikk-kart4.appspot.com",
+    messagingSenderId: "549360792341",
+    appId: "1:549360792341:web:8766270393aaa9428a2f1c",
+    measurementId: "G-2M8QC34TE2"
+};
+
+const firebase = require('firebase');
+firebase.initializeApp(firebaseConfig);
+
+//replaces all admin.firestore
+const db = admin.firestore();
+
+app.get('/screams',(req:undefined, res:undefined | any) => {
+    db
+        .collection('screams')
+        //.orderBy('createdAt','desc') denne er buggy
+        .get()
+        .then((data) => {
+            let screams:any = [];
+            data.forEach((doc) => {
+                screams.push({
+                    screamId: doc.id,
+                    body: doc.data().body,
+                    userHandle: doc.data().userHandle,
+                    createdAt: doc.data().createdAt
+                })
+            });
+            return res.json(screams);
+        })
+        .catch((err) => console.log(err));
+});
 
 
-exports.createScream = functions.https.onRequest((req, res:any | undefined) => {
-
-    if (req.method != 'POST'){
-        return res.status(400).json({ error: 'Method not allowed'});
-    }
+app.post('/scream',(req:any, res:any | undefined) => {
     const newScream = {
-        first: req.body.body,
+        body: req.body.body,
         userHandle: req.body.userHandle,
-        time: admin.firestore.Timestamp.fromDate(new Date())
+        //turns date into string
+        createdAt: new Date().toISOString()
+        //time: admin.firestore.Timestamp.fromDate(new Date())
     };
 
-    admin
-        .firestore()
+    db
         .collection('screams')
         .add(newScream)
         .then(doc => {
@@ -37,8 +71,7 @@ exports.createNewUser = functions.https.onRequest((req, res:any | undefined) => 
         time: admin.firestore.Timestamp.fromDate(new Date())
     };
 
-    admin
-        .firestore()
+    db
         .collection('users')
         .add(newUser)
         .then(doc => {
@@ -50,34 +83,127 @@ exports.createNewUser = functions.https.onRequest((req, res:any | undefined) => 
         })
 });
 
-export const getUsers = functions.https.onRequest((req, res) => {
- admin.firestore().collection('users').get()
-     .then((data => {
-      let scream = [];
-      scream.push("");
-      data.forEach((doc) => {
-       scream.push(doc.data())
-      });
-      return res.json(scream)
-     }))
-     .catch((err) => console.log(err))
+const isEmail = (email:any) => {
+    const regEx = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    if (email.match(regEx))
+        return true;
+    else
+        return false;
+
+};
+
+const isEmpty = (string:any) => {
+    if (string.trim() === '')
+        return true;
+    else
+        return false;
+}
+
+app.post('/signup',(req:any,res:any) => {
+    const newUser = {
+            email: req.body.email,
+            password: req.body.password,
+            confirmPassword: req.body.confirmPassword,
+            handle: req.body.handle
+    };
+
+    interface LooseObject {
+        [key: string]: any
+    }
+
+    let errors: LooseObject = {};
+
+    if (isEmpty(newUser.email)){
+    errors.email = 'Email must not be empty'
+    }
+    else if (!isEmail(newUser.email)){
+        errors.email = 'Must be valid email address'
+    }
+
+    if (isEmpty(newUser.password))
+        errors.password = 'Must not be empty';
+    if (newUser.password !== newUser.confirmPassword)
+        errors.confirmPassword = 'Passwords must match';
+    if (isEmpty(newUser.handle))
+        errors.handle = 'Must not be empty';
+
+    if (Object.keys(errors).length > 0)
+        return res.status(400).json(errors);
+    //validate data
+    let token:any, userId:any;
+    db.doc(`/users/${newUser.handle}`).get()
+        .then(doc => {
+            //if true = handle already exists
+            if (doc.exists){
+                return res.status(400).json({ handle: 'this handle is already taken'})
+            }
+            else {
+                return firebase
+                    .auth()
+                    .createUserWithEmailAndPassword(newUser.email, newUser.password)
+            }
+        })
+        .then(data => {
+            userId = data.user.uid;
+            return data.user.getIdToken();
+        })
+        .then((idToken) => {
+            token = idToken;
+            const userCredentials = {
+                handle: newUser.handle,
+                email: newUser.email,
+                createdAt: new Date().toISOString(),
+                userId
+            };
+            return db.doc(`/users/${newUser.handle}`).set(userCredentials);
+            //return res.status(201).json({ token });
+        })
+        .then(() => {
+            return res.status(201).json({ token })
+        })
+        .catch(err => {
+            console.error(err);
+            if (err.code === 'auth/email-already-in-use'){
+                return res.status(400).json({ email: 'Email already in use' })
+            }
+            else {
+                return res.status(500).json({ error: err.code})
+            }
+        })
 });
 
-export const getUserDecima = functions.https.onRequest((req, res) => {
- admin.firestore().doc('users/Decima').get()
- .then(snapshot => {
-  const data = snapshot.data();
-  res.send(data)
-     })
- .catch(error => {
-  console.log(error);
-  res.status(500).send(error)
- })
+app.post('/login', (req:any, res:any) => {
+    const user = {
+        email: req.body.email,
+        password: req.body.password
+    };
+    //res.status(201).json(`hello ${user.email}`)
+    let errors: {[k: string]: any} = {};
+
+    if (isEmpty(user.email))
+        errors.email = 'Must not be empty';
+    if (isEmpty(user.password))
+        errors.password = 'Must not be empty';
+
+    if (Object.keys(errors).length > 0)
+        return res.status(400).json(errors);
+
+    firebase
+        .auth()
+        .signInWithEmailAndPassword(user.email, user.password)
+        .then((data:any) => {
+            return data.user.getIdToken();
+        })
+        .then((token:any) => {
+            return res.json({ token });
+        })
+        .catch((err:any) => {
+            console.error(err);
+            if (err.code === 'auth/wrong-password')
+                return res.status(403).json({ general: 'Wrong credentials, please try again'});
+            else
+                return res.status(500).json({ error: err.code })
+        })
 });
 
-// // Start writing Firebase Functions
-// // https://firebase.google.com/docs/functions/typescript
-//
- export const helloWorld = functions.https.onRequest((request, response) => {
-  response.send("Hello from Firebase!");
- });
+exports.api = functions.region('europe-west1').https.onRequest(app);
