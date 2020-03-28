@@ -2,25 +2,9 @@ import * as functions from 'firebase-functions';
 import {db,admin,firebase} from "./util/admin";
 const app = require('express')();
 
-app.get('/screams',(req:undefined, res:undefined | any) => {
-    db
-        .collection('screams')
-        //.orderBy('createdAt','desc') denne er buggy
-        .get()
-        .then((data) => {
-            let screams:any = [];
-            data.forEach((doc) => {
-                screams.push({
-                    screamId: doc.id,
-                    body: doc.data().body,
-                    userHandle: doc.data().userHandle,
-                    createdAt: doc.data().createdAt
-                })
-            });
-            return res.json(screams);
-        })
-        .catch((err) => console.log(err));
-});
+const {getAllScreams} = require('./handlers/screams');
+
+app.get('/screams', getAllScreams);
 
 //middle ware
 const FBAuth = (req:any, res:any, next:any) => {
@@ -121,12 +105,7 @@ app.post('/signup',(req:any,res:any) => {
             confirmPassword: req.body.confirmPassword,
             handle: req.body.handle
     };
-
-    interface LooseObject {
-        [key: string]: any
-    }
-
-    let errors: LooseObject = {};
+    let errors: {[k: string]: any} = {};
 
     if (isEmpty(newUser.email)){
     errors.email = 'Email must not be empty'
