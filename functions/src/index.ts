@@ -3,7 +3,8 @@ const functions = require('firebase-functions');
 const app = require('express')();
 
 const {db,admin,firebase} = require('./util/admin');
-const {getAllScreams} = require('./handlers/screams');
+const {getAllScreams, postOneScream} = require('./handlers/screams');
+const {signup} = require('./handlers/users');
 
 app.get('/screams',getAllScreams);
 
@@ -37,119 +38,26 @@ const FBAuth = (req:any, res:any, next:any) => {
         })
 };
 
-app.post('/scream', FBAuth,(req:any, res:any | undefined) => {
-    if (req.body.body.trim() === ''){
-        return res.status(400).json({ body: 'Body must not be empty' });
-    }                          
+app.post('/scream', FBAuth, postOneScream);
 
-    const newScream = {
-        body: req.body.body,
-        userHandle: req.user.handle,
-        //turns date into string
-        createdAt: new Date().toISOString()
-        //time: admin.firestore.Timestamp.fromDate(new Date())
-    };
-
-    db
-        .collection('screams')
-        .add(newScream)
-        .then((doc:any) => {
-            res.json({ message: `document ${doc.id} created successfully`});
-        })
-        .catch((err:any) => {
-            res.status(500).json({ error: 'something went wrong'});
-            console.error(err)
-        })
-});
-
+/*
 const isEmail = (email:any) => {
     const regEx = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     if (email.match(regEx))
         return true;
     else
         return false;
-
 };
+ */
 
 const isEmpty = (string:any) => {
     if (string.trim() === '')
         return true;
     else
         return false;
-}
+};
 
-app.post('/signup',(req:any,res:any) => {
-    const newUser = {
-            email: req.body.email,
-            password: req.body.password,
-            confirmPassword: req.body.confirmPassword,
-            handle: req.body.handle
-    };
-
-    interface LooseObject {
-        [key: string]: any
-    }
-
-    let errors: LooseObject = {};
-
-    if (isEmpty(newUser.email)){
-    errors.email = 'Email must not be empty'
-    }
-    else if (!isEmail(newUser.email)){
-        errors.email = 'Must be valid email address'
-    }
-
-    if (isEmpty(newUser.password))
-        errors.password = 'Must not be empty';
-    if (newUser.password !== newUser.confirmPassword)
-        errors.confirmPassword = 'Passwords must match';
-    if (isEmpty(newUser.handle))
-        errors.handle = 'Must not be empty';
-
-    if (Object.keys(errors).length > 0)
-        return res.status(400).json(errors);
-    //validate data
-    let token:any, userId:any;
-    db.doc(`/users/${newUser.handle}`).get()
-        .then((doc:any) => {
-            //if true = handle already exists
-            if (doc.exists){
-                return res.status(400).json({ handle: 'this handle is already taken'})
-            }
-            else {
-                return firebase
-                    .auth()
-                    .createUserWithEmailAndPassword(newUser.email, newUser.password)
-            }
-        })
-        .then((data:any) => {
-            userId = data.user.uid;
-            return data.user.getIdToken();
-        })
-        .then((idToken:any) => {
-            token = idToken;
-            const userCredentials = {
-                handle: newUser.handle,
-                email: newUser.email,
-                createdAt: new Date().toISOString(),
-                userId
-            };
-            return db.doc(`/users/${newUser.handle}`).set(userCredentials);
-            //return res.status(201).json({ token });
-        })
-        .then(() => {
-            return res.status(201).json({ token })
-        })
-        .catch((err:any) => {
-            console.error(err);
-            if (err.code === 'auth/email-already-in-use'){
-                return res.status(400).json({ email: 'Email already in use' })
-            }
-            else {
-                return res.status(500).json({ error: err.code})
-            }
-        })
-});
+app.post('/signup', signup);
 
 app.post('/login', (req:any, res:any) => {
     const user = {
