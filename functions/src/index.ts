@@ -3,27 +3,9 @@ const functions = require('firebase-functions');
 const app = require('express')();
 
 const {db,admin,firebase} = require('./util/admin');
+const {getAllScreams} = require('./handlers/screams');
 
-
-app.get('/screams',(req:undefined, res:undefined | any) => {
-    db
-        .collection('screams')
-        //.orderBy('createdAt','desc') denne er buggy
-        .get()
-        .then((data:any) => {
-            let screams:any = [];
-            data.forEach((doc:any) => {
-                screams.push({
-                    screamId: doc.id,
-                    body: doc.data().body,
-                    userHandle: doc.data().userHandle,
-                    createdAt: doc.data().createdAt
-                })
-            });
-            return res.json(screams);
-        })
-        .catch((err:any) => console.log(err));
-});
+app.get('/screams',getAllScreams);
 
 //middle ware
 const FBAuth = (req:any, res:any, next:any) => {
