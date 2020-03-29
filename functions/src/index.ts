@@ -1,23 +1,12 @@
 import * as functions from 'firebase-functions';
 import * as admin from "firebase-admin";
+import {firebaseConfig} from "./util/config";
 const app = require('express')();
+
+
 admin.initializeApp();
-
-const firebaseConfig = {
-    apiKey: "AIzaSyDop8SvuITaKeWvxZK7fOiOLXWEPVU2uik",
-    authDomain: "veitrafikk-kart4.firebaseapp.com",
-    databaseURL: "https://veitrafikk-kart4.firebaseio.com",
-    projectId: "veitrafikk-kart4",
-    storageBucket: "veitrafikk-kart4.appspot.com",
-    messagingSenderId: "549360792341",
-    appId: "1:549360792341:web:8766270393aaa9428a2f1c",
-    measurementId: "G-2M8QC34TE2"
-};
-
 const firebase = require('firebase');
 firebase.initializeApp(firebaseConfig);
-
-//replaces all admin.firestore
 const db = admin.firestore();
 
 app.get('/screams',(req:undefined, res:undefined | any) => {
@@ -86,27 +75,6 @@ app.post('/scream', FBAuth,(req:any, res:any | undefined) => {
     db
         .collection('screams')
         .add(newScream)
-        .then(doc => {
-            res.json({ message: `document ${doc.id} created successfully`});
-        })
-        .catch((err) => {
-            res.status(500).json({ error: 'something went wrong'});
-            console.error(err)
-        })
-});
-
-exports.createNewUser = functions.https.onRequest((req, res:any | undefined) => {
-    if (req.method !== 'POST')
-        return res.status(400).json({error: 'MMM'});
-
-    const newUser = {
-        first: req.body.body,
-        time: admin.firestore.Timestamp.fromDate(new Date())
-    };
-
-    db
-        .collection('users')
-        .add(newUser)
         .then(doc => {
             res.json({ message: `document ${doc.id} created successfully`});
         })
