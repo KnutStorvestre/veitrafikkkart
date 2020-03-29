@@ -1,22 +1,18 @@
-import * as functions from 'firebase-functions';
-import * as admin from "firebase-admin";
-import {firebaseConfig} from "./util/config";
+const functions = require('firebase-functions');
+
 const app = require('express')();
 
+const {db,admin,firebase} = require('./util/admin');
 
-admin.initializeApp();
-const firebase = require('firebase');
-firebase.initializeApp(firebaseConfig);
-const db = admin.firestore();
 
 app.get('/screams',(req:undefined, res:undefined | any) => {
     db
         .collection('screams')
         //.orderBy('createdAt','desc') denne er buggy
         .get()
-        .then((data) => {
+        .then((data:any) => {
             let screams:any = [];
-            data.forEach((doc) => {
+            data.forEach((doc:any) => {
                 screams.push({
                     screamId: doc.id,
                     body: doc.data().body,
@@ -26,7 +22,7 @@ app.get('/screams',(req:undefined, res:undefined | any) => {
             });
             return res.json(screams);
         })
-        .catch((err) => console.log(err));
+        .catch((err:any) => console.log(err));
 });
 
 //middle ware
@@ -41,7 +37,7 @@ const FBAuth = (req:any, res:any, next:any) => {
     }
 
     admin.auth().verifyIdToken(idToken)
-        .then(decodedToken => {
+        .then((decodedToken:any) => {
             req.user = decodedToken;
             console.log(decodedToken);
             return db.collection('users')
@@ -49,11 +45,11 @@ const FBAuth = (req:any, res:any, next:any) => {
                 .limit(1)
                 .get();
         })
-        .then(data => {
+        .then((data:any) => {
             req.user.handle = data.docs[0].data().handle;
             return next();
         })
-        .catch(err => {
+        .catch((err:any) => {
             console.error('Error while verifying token ', err);
             return res.status(403).json(err);
         })
@@ -75,10 +71,10 @@ app.post('/scream', FBAuth,(req:any, res:any | undefined) => {
     db
         .collection('screams')
         .add(newScream)
-        .then(doc => {
+        .then((doc:any) => {
             res.json({ message: `document ${doc.id} created successfully`});
         })
-        .catch((err) => {
+        .catch((err:any) => {
             res.status(500).json({ error: 'something went wrong'});
             console.error(err)
         })
@@ -133,7 +129,7 @@ app.post('/signup',(req:any,res:any) => {
     //validate data
     let token:any, userId:any;
     db.doc(`/users/${newUser.handle}`).get()
-        .then(doc => {
+        .then((doc:any) => {
             //if true = handle already exists
             if (doc.exists){
                 return res.status(400).json({ handle: 'this handle is already taken'})
@@ -144,11 +140,11 @@ app.post('/signup',(req:any,res:any) => {
                     .createUserWithEmailAndPassword(newUser.email, newUser.password)
             }
         })
-        .then(data => {
+        .then((data:any) => {
             userId = data.user.uid;
             return data.user.getIdToken();
         })
-        .then((idToken) => {
+        .then((idToken:any) => {
             token = idToken;
             const userCredentials = {
                 handle: newUser.handle,
@@ -162,7 +158,7 @@ app.post('/signup',(req:any,res:any) => {
         .then(() => {
             return res.status(201).json({ token })
         })
-        .catch(err => {
+        .catch((err:any) => {
             console.error(err);
             if (err.code === 'auth/email-already-in-use'){
                 return res.status(400).json({ email: 'Email already in use' })
