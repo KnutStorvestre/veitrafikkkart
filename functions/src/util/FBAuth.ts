@@ -1,16 +1,7 @@
-const functions = require('firebase-functions');
+export {};
+const {admin,db} = require('./admin');
 
-const app = require('express')();
-
-const {db,admin,firebase} = require('./util/admin');
-const {getAllScreams, postOneScream} = require('./handlers/screams');
-const {signup,login} = require('./handlers/users');
-//const FBAuth = require('./util/FBAuth');
-
-app.get('/screams',getAllScreams);
-
-//middle ware
-const FBAuth = (req:any, res:any, next:any) => {
+module.exports = (req:any, res:any, next:any) => {
     let idToken;
     if(req.headers.authorization && req.headers.authorization.startsWith('Bearer ')){
         idToken = req.headers.authorization.split('Bearer ')[1];
@@ -39,11 +30,3 @@ const FBAuth = (req:any, res:any, next:any) => {
             return res.status(403).json(err);
         })
 };
-
-app.post('/scream', FBAuth, postOneScream);
-
-app.post('/signup', signup);
-
-app.post('/login', login);
-
-exports.api = functions.region('europe-west1').https.onRequest(app);
