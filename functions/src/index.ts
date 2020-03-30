@@ -1,16 +1,18 @@
-import * as functions from 'firebase-functions';
+
+const functions = require('firebase-functions');
 
 const app = require('express')();
 
 const {getAllScreams, postOneScream} = require('./handlers/screams');
-const {signUp, login} = require('./handlers/users');
-const FBAuth = require('./util/fbAuth');
+const {signup,login} = require('./handlers/users');
+const fbAuth = require('./util/fbAuth');
 
-app.get('/screams', getAllScreams);
+//screams
+app.get('/screams',getAllScreams);
+app.post('/scream', fbAuth, postOneScream);
 
-app.post('/scream', FBAuth, postOneScream);
-
-app.post('/signup',signUp);
+//user
+app.post('/signup', signup);
 
 app.post('/login', login);
 

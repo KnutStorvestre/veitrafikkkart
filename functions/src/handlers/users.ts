@@ -1,14 +1,41 @@
-const config = require('../util/config');
 
-const firebase = require('firebase');
-firebase.initializeApp(config);
+export {};
 
-//import {isEmail, isEmpty} from "../util/validators";
+const {db,firebase} = require('../util/admin');
 
-const { validateSignupData, validateLoginData } = require('../util/validators');
-//const {db} = require('../util/admin')
+const { validateSignupData, validateLoginData } = require('../util/validation')
 
-exports.signUp = (req:any,res:any) => {
+exports.login = (req:any, res:any) => {
+    const user = {
+        email: req.body.email,
+        password: req.body.password
+    };
+
+    const {valid, errors} = validateLoginData(user);
+
+    if (!valid)
+        return res.status(400).json(errors);
+
+    firebase
+        .auth()
+        .signInWithEmailAndPassword(user.email, user.password)
+        .then((data:any) => {
+            return data.user.getIdToken();
+        })
+        .then((token:any) => {
+            return res.json({ token });
+        })
+        .catch((err:any) => {
+            console.error(err);
+            if (err.code === 'auth/wrong-password')
+                return res.status(403).json({ general: 'Wrong credentials, please try again'});
+            else
+                return res.status(500).json({ error: err.code })
+        })
+};
+
+exports.signup = (req:any,res:any) => {
+
     const newUser = {
         email: req.body.email,
         password: req.body.password,
@@ -16,7 +43,8 @@ exports.signUp = (req:any,res:any) => {
         handle: req.body.handle
     };
 
-    const { valid, errors } = validateSignupData(newUser);
+    const {valid, errors} = validateSignupData(newUser);
+
 
     if (!valid)
         return res.status(400).json(errors);
@@ -61,34 +89,5 @@ exports.signUp = (req:any,res:any) => {
             else {
                 return res.status(500).json({ error: err.code})
             }
-        })
-};
-
-exports.login = (req:any, res:any) => {
-    const user = {
-        email: req.body.email,
-        password: req.body.password
-    };
-
-    const { valid, errors } = validateLoginData(user);
-
-    if (!valid)
-        return res.status(400).json(errors);
-
-    firebase
-        .auth()
-        .signInWithEmailAndPassword(user.email, user.password)
-        .then((data:any) => {
-            return data.user.getIdToken();
-        })
-        .then((token:any) => {
-            return res.json({ token });
-        })
-        .catch((err:any) => {
-            console.error(err);
-            if (err.code === 'auth/wrong-password')
-                return res.status(403).json({ general: 'Wrong credentials, please try again'});
-            else
-                return res.status(500).json({ error: err.code })
         })
 };

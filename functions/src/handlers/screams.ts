@@ -1,6 +1,7 @@
-//import {db} from "../util/admin";
 
-//const { db } = require('../util/admin');
+export {}
+const {db} = require('../util/admin');
+
 
 exports.getAllScreams = (req:any, res:any) => {
     db
@@ -22,7 +23,7 @@ exports.getAllScreams = (req:any, res:any) => {
         .catch((err:any) => console.log(err));
 };
 
-exports.postOneScream = (req:any, res:any) => {
+exports.postOneScream = (req:any, res:any | undefined) => {
     if (req.body.body.trim() === ''){
         return res.status(400).json({ body: 'Body must not be empty' });
     }
