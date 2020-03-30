@@ -1,5 +1,7 @@
+
 export {}
 const {db} = require('../util/admin');
+
 
 exports.getAllScreams = (req:any, res:any) => {
     db

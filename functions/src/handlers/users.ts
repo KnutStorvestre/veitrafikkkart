@@ -1,3 +1,4 @@
+
 export {};
 
 const {db,firebase} = require('../util/admin');
@@ -34,6 +35,7 @@ exports.login = (req:any, res:any) => {
 };
 
 exports.signup = (req:any,res:any) => {
+
     const newUser = {
         email: req.body.email,
         password: req.body.password,
@@ -42,6 +44,7 @@ exports.signup = (req:any,res:any) => {
     };
 
     const {valid, errors} = validateSignupData(newUser);
+
 
     if (!valid)
         return res.status(400).json(errors);

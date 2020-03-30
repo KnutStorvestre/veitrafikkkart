@@ -1,3 +1,4 @@
+
 export {};
 const {admin, db} = require('./admin');
 
@@ -13,6 +14,7 @@ module.exports = (req:any, res:any, next:any) => {
 
     admin
         .auth().verifyIdToken(idToken)
+
         .then((decodedToken:any) => {
             req.user = decodedToken;
             console.log(decodedToken);
