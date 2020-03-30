@@ -1,4 +1,4 @@
-import {firebaseConfig} from "./config";
+const firebaseConfig = require('./config');
 
 const admin = require('firebase-admin');
 
