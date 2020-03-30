@@ -3,7 +3,7 @@ const functions = require('firebase-functions');
 const app = require('express')();
 
 const {getAllScreams, postOneScream} = require('./handlers/screams');
-const {signup,login} = require('./handlers/users');
+const {signup,login,uploadImage} = require('./handlers/users');
 const fbAuth = require('./util/fbAuth');
 
 //screams
@@ -12,6 +12,7 @@ app.post('/scream', fbAuth, postOneScream);
 
 //user
 app.post('/signup', signup);
-app.post('/login'/*, fbAuth*/, login);
+app.post('/login', login);
+app.post('/user/image', fbAuth, uploadImage);
 
 exports.api = functions.region('europe-west1').https.onRequest(app);

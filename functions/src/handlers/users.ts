@@ -102,15 +102,17 @@ exports.uploadImage = (req:any,res:any) => {
 
     const busboy = new BusBoy({ headers: req.headers });
 
+
     interface IImageToBeUploaded {
-        filepath: (any|number),
-        mimetype: (any|number)
+        filepath?:any,
+        mimetype?: any
     }
 
     let imageFileName:string;
-    let imageToBeUploaded:IImageToBeUploaded;// = {a,b};
 
-    busboy.on('file', (fieldname:any, file:any, filename:any, encoding:any, mimetype:any) => {
+    let imageToBeUploaded:IImageToBeUploaded = {};
+
+    busboy.on('file', (fieldname:any, file:any, filename:any, encoding:any, mimetype:string) => {
         console.log(fieldname);
         console.log(filename);
         console.log(mimetype);
@@ -139,6 +141,6 @@ exports.uploadImage = (req:any,res:any) => {
             .catch((err:any) => {
                 console.error(err);
                 return res.status(500).json({error: err.code})
-            })
-    })
+            });
+    });
 };

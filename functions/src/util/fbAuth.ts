@@ -8,7 +8,7 @@ module.exports = (req:any, res:any, next:any) => {
     }
     else {
         console.log('No token found');
-        return res.status(403).json({ error: 'Unauthrozed'} )
+        return res.status(403).json({ error: 'Unauthrozed here'} )
     }
 
     admin
