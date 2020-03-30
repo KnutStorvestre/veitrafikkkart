@@ -1,5 +1,5 @@
 export {};
-const {admin,db} = require('./admin');
+const {admin, db} = require('./admin');
 
 module.exports = (req:any, res:any, next:any) => {
     let idToken;

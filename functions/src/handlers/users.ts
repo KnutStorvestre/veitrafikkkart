@@ -9,24 +9,11 @@ exports.login = (req:any, res:any) => {
         email: req.body.email,
         password: req.body.password
     };
-    //res.status(201).json(`hello ${user.email}`)
 
     const {valid, errors} = validateLoginData(user);
 
     if (!valid)
         return res.status(400).json(errors);
-
-    /*
-    let errors: {[k: string]: any} = {};
-
-    if (isEmpty(user.email))
-        errors.email = 'Must not be empty';
-    if (isEmpty(user.password))
-        errors.password = 'Must not be empty';
-
-    if (Object.keys(errors).length > 0)
-        return res.status(400).json(errors);
-     */
 
     firebase
         .auth()
