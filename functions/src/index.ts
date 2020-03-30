@@ -12,7 +12,6 @@ app.post('/scream', fbAuth, postOneScream);
 
 //user
 app.post('/signup', signup);
-
 app.post('/login', login);
 
 exports.api = functions.region('europe-west1').https.onRequest(app);
