@@ -3,7 +3,7 @@ export {};
 
 const {db,firebase,admin} = require('../util/admin');
 
-const { validateSignupData, validateLoginData } = require('../util/validation')
+const { validateSignupData, validateLoginData, reduceUserDetails } = require('../util/validators');
 
 exports.login = (req:any, res:any) => {
     const user = {
@@ -35,7 +35,6 @@ exports.login = (req:any, res:any) => {
 };
 
 exports.signup = (req:any,res:any) => {
-
     const newUser = {
         email: req.body.email,
         password: req.body.password,
@@ -94,8 +93,20 @@ exports.signup = (req:any,res:any) => {
         })
 };
 
-//const storage = firebase.storage();
-//const storageRef = storage.ref();
+exports.addUserDetails = (req:any, res:any) => {
+    const userDetails = reduceUserDetails(req.body);
+
+    db.doc(`/users/${req.user.handle}`).update(userDetails)
+        .then(() => {
+            return res.json({ message: 'Details added successfully'});
+        })
+        .catch((err:any) => {
+            console.log(err);
+            return res.status(500).json({error: err.code});
+        })
+};
+
+//Uploads a profile image for user
 exports.uploadImage = (req:any, res:any) => {
     const BusBoy = require('busboy');
     const path = require('path');
@@ -156,77 +167,3 @@ exports.uploadImage = (req:any, res:any) => {
     });
     busboy.end(req.rawBody);
 };
-/*
-exports.uploadImage = (req:any,res:any) => {
-    const newImage = {
-        filename12: req.form?.elements?.length
-        //filename13: req.form?.
-        //fileToBeUploaded: req.form?.accessKeyLabel
-    };
-
-    //return res.status(500).json({ error: newImage.filename})
-    return res.status(500).json({ error: "s " + newImage.filename12})
-
-    //var file = req.file
-
-};
- */
-
-/*
-exports.uploadImage = (req:any,res:any) => {
-
-    const BusBoy = require('busboy');
-    const path = require('path');
-    const os = require('os');
-    const fs = require('fs');
-
-        const busboy = new BusBoy({ headers: req.headers });
-
-    //experimental part start
-    interface IImageToBeUploaded {
-        filepath?:any,
-        mimetype?: any
-    }
-
-    let imageFileName:string;
-
-    let imageToBeUploaded:IImageToBeUploaded = {};
-    //experimental part end
-
-    busboy.on('file', (fieldname:any, file:any, filename:any, encoding:any, mimetype:string) => {
-        if (mimetype !== 'image/jpeg' && mimetype !== 'image/png'){
-            return res.status(400).json({ error: 'Wrong file submitted'});
-        }
-        console.log(fieldname);
-        console.log(filename);
-        console.log(mimetype);
-        const imageExtention = filename.split('.')[filename.split('.')-1];
-        imageFileName = `${Math.round(Math.random()*100000000000)}.${imageExtention}`;
-        const filepath = path.join(os.tmpdir(), imageFileName);
-        imageToBeUploaded = { filepath, mimetype};
-        file.pipe(fs.createWriteStream(filepath));
-    });
-    busboy.on('finish', () => {
-        admin.storage().bucket(config.storageBucket).upload(imageToBeUploaded.filepath, {
-            resumable: false,
-            metadata: {
-                    metadata: {
-                    contentType: imageToBeUploaded.mimetype
-                }
-            }
-        })
-            .then(() => {
-                const imageUrl = `https://firebasestorage.googleapis.com/v0/b/${config.storageBucket}/o/${imageFileName}?alt=media`;
-                return res.status(500).json({error: "got to first then statemenf"})
-                return db.doc(`/users/${req.user.handle}`).upload({imageUrl})
-            })
-            .then(() => {
-                return res.json({ message: 'Image uploaded successfully' });
-            })
-            .catch((err:any) => {
-                console.error(err);
-                return res.status(500).json({error: err.code + "what is wong?"})
-            });
-    });
-    busboy.end(req.rawBody);
-};*/
