@@ -1,3 +1,5 @@
+//import {user} from "firebase-functions/lib/providers/auth";
+
 const config = require('../util/config');
 export {};
 
@@ -104,6 +106,37 @@ exports.addUserDetails = (req:any, res:any) => {
             console.log(err);
             return res.status(500).json({error: err.code});
         })
+};
+
+//Get own user details
+exports.getAuthenticatedUser = (req:any, res:any) => {
+
+    interface IuserData {
+        credentials:any,
+        likes:number[]
+    }
+
+    let userData:IuserData = {credentials:"",likes:new Array()}; //eksperimental
+
+    db.doc(`/users/${req.user.handle}`).get()
+        .then((doc:any) => {
+            if (doc.exists){
+                userData.credentials = doc.data();
+                return db.collection('likes')
+                    .where('userHandle', '==', req.user.handle)
+                    .get();
+            }
+        })
+        .then((data:any) => {
+            data.forEach((doc:any) => {
+                userData.likes.push(doc.data)
+            });
+            return res.json(userData);
+        })
+        .catch((err:any) => {
+            console.log(err);
+            return res.status(500).json({ error: err.code});
+        });
 };
 
 //Uploads a profile image for user
