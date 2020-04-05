@@ -116,7 +116,7 @@ exports.getAuthenticatedUser = (req:any, res:any) => {
         likes:number[]
     }
 
-    let userData:IuserData = {credentials:"",likes:new Array()}; //eksperimental
+    let userData:IuserData = {credentials:"",likes:[]}; //eksperimental
 
     db.doc(`/users/${req.user.handle}`).get()
         .then((doc:any) => {
