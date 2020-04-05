@@ -48,9 +48,7 @@ exports.postOneScream = (req:any, res:any | undefined) => {
 };
 
 
-//TODO
 exports.getScream = (req:any, res:any) => {
-
     interface IScreamData {
         screamId:any,
         comments:any[]
@@ -83,4 +81,34 @@ exports.getScream = (req:any, res:any) => {
         })
 };
 
+exports.commentOnScream = (req:any,res:any) => {
+    if (req.body.body.trim() === '')
+        return res.status(400).json({comment: 'Must not be empty'});
+
+    const newComment = {
+        body: req.body.body,
+        createdAt: new Date().toISOString(),
+        screamId: req.params.screamId,
+        userHandle: req.user.handle,
+        userImage: req.user.imageUrl
+    };
+
+    console.log(newComment)
+
+    db.doc(`/screams/${req.params.screamId}`)
+        .get()
+        .then((doc:any) => {
+            if (!doc.exists){
+                return res.status(404).json({error: 'Scream not found'});
+            }
+            return db.collection('comments').add(newComment);
+        })
+        .then(() => {
+            res.json(newComment);
+        })
+        .catch((err:any) => {
+            console.log(err);
+            res.status(500).json({ error: 'Something went wrong' })
+        })
+};
 
