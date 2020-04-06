@@ -133,3 +133,49 @@ exports.commentOnScream = (req:any,res:any) => {
         })
 };
 
+exports.likeScream = (req:any,res:any) => {
+    const likeDocument = db.collection('likes')
+        .where('userHandle',"==", req.user.handle)
+        .where('screamId','==',req.params.screamId).limit(1);
+
+    const screamDocument = db.doc(`/screams/${req.params.screamId}`);
+
+    let screamData: {[k: string]: any} = {};
+
+    screamDocument.get()
+        .then((doc:any) => {
+            if (doc.exists){
+                screamData = doc.data();
+                console.log(screamData); //temp
+                console.log(doc.data()); //temp
+                screamData.screamId = doc.id;
+                return likeDocument.get();
+            }
+            else
+                res.status(404).json({error: 'Scream not found'});
+        })
+        .then((data:any) => {
+            if (data.empty){
+                return db.collection('likes').add({
+                    screamId: req.params.screamId,
+                    userHandle: req.user.handle
+                })
+                    .then(() => {
+                        screamData.likeCount++;
+                        return screamDocument.update({ likeCount: screamData.likeCount })
+                    })
+                    .then(() => {
+                        return res.json(screamData);
+                    })
+            }
+            else {
+                return res.status(400).json({ error: 'Scream already liked'});
+            }
+        })
+        .catch((err:any) => {
+            console.log(err);
+            res.status(500).json({ error: err.code })
+        })
+
+}
+
