@@ -7,8 +7,8 @@ const {
     postOneScream,
     getScream,
     commentOnScream,
-    likeScream
-    //unlikeScream
+    likeScream,
+    unlikeScream
 } = require('./handlers/screams');
 
 const {
@@ -34,7 +34,7 @@ app.post('/scream', fbAuth, postOneScream);
 app.get('/scream/:screamId',getScream);
 app.post('/scream/:screamId/comment',fbAuth,commentOnScream);
 app.get('/scream/:screamId/like', fbAuth,likeScream);
-//app.get('/scream/:screamId/like', fbAuth, unlikeScream);
+app.get('/scream/:screamId/unlike', fbAuth, unlikeScream);
 
 //TODO: delete a scream
 //TODO: like a scream
