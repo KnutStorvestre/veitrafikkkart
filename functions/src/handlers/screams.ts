@@ -30,8 +30,23 @@ exports.postOneScream = (req:any, res:any | undefined) => {
     const newScream = {
         body: req.body.body,
         userHandle: req.user.handle,
+        userImage: req.user.imageUrl,
         //turns date into string
-        createdAt: new Date().toISOString()
+        createdAt: new Date().toISOString(),
+        likeCont: 0,
+        commentCount: 0,
+        //time: admin.firestore.Timestamp.fromDate(new Date())
+    };
+
+    const resScream = {
+        body: req.body.body,
+        userHandle: req.user.handle,
+        userImage: req.user.imageUrl,
+        //turns date into string
+        createdAt: new Date().toISOString(),
+        likeCont: 0,
+        commentCount: 0,
+        screamId: ""
         //time: admin.firestore.Timestamp.fromDate(new Date())
     };
 
@@ -39,7 +54,9 @@ exports.postOneScream = (req:any, res:any | undefined) => {
         .collection('screams')
         .add(newScream)
         .then((doc:any) => {
-            res.json({ message: `document ${doc.id} created successfully`});
+            //const resScream = newScream;
+            resScream.screamId = doc.id;
+            res.json(resScream);
         })
         .catch((err:any) => {
             res.status(500).json({ error: 'something went wrong'});
@@ -47,19 +64,22 @@ exports.postOneScream = (req:any, res:any | undefined) => {
         })
 };
 
-
 exports.getScream = (req:any, res:any) => {
+    //let screamData = {};
     interface IScreamData {
         screamId:any,
         comments:any[]
     }
 
+    console.log(req.params.screamId);
+
     let screamData:IScreamData = {screamId:"", comments:[]};
+
     db.doc(`/screams/${req.params.screamId}`)
         .get()
         .then((doc:any) => {
-            if (!doc.exists){
-                return res.status(404).json({error: 'Scream not found'})
+            if (!doc.exists) {
+                return res.status(404).json({ error: 'Scream not found' });
             }
             screamData = doc.data();
             screamData.screamId = doc.id;
@@ -70,15 +90,16 @@ exports.getScream = (req:any, res:any) => {
                 .get();
         })
         .then((data:any) => {
+            screamData.comments = [];
             data.forEach((doc:any) => {
-                screamData.comments.push(doc.data())
+                screamData.comments.push(doc.data());
             });
             return res.json(screamData);
         })
         .catch((err:any) => {
-            console.log(err);
-            res.status(500).json({ error: err.code});
-        })
+            console.error(err);
+            res.status(500).json({ error: err.code });
+        });
 };
 
 exports.commentOnScream = (req:any,res:any) => {
@@ -93,7 +114,7 @@ exports.commentOnScream = (req:any,res:any) => {
         userImage: req.user.imageUrl
     };
 
-    console.log(newComment)
+    console.log(newComment);
 
     db.doc(`/screams/${req.params.screamId}`)
         .get()
