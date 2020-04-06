@@ -8,7 +8,8 @@ const {
     getScream,
     commentOnScream,
     likeScream,
-    unlikeScream
+    unlikeScream,
+    deleteScream
 } = require('./handlers/screams');
 
 const {
@@ -35,11 +36,8 @@ app.get('/scream/:screamId',getScream);
 app.post('/scream/:screamId/comment',fbAuth,commentOnScream);
 app.get('/scream/:screamId/like', fbAuth,likeScream);
 app.get('/scream/:screamId/unlike', fbAuth, unlikeScream);
+app.delete('/scream/:screamId', fbAuth, deleteScream);
 
-//TODO: delete a scream
-//TODO: like a scream
-//TODO: unlike a scream
-//TODO: comment on a scream
-
+//TODO: remove comments and likes to scream that has been deleted
 
 exports.api = functions.region('europe-west1').https.onRequest(app);

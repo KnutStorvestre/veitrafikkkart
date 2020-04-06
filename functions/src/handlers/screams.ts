@@ -224,3 +224,26 @@ exports.unlikeScream = (req:any,res:any) => {
             res.status(500).json({ error: err.code })
         })
 };
+
+exports.deleteScream = (req:any,res:any) => {
+    const document = db.doc(`/screams/${req.params.screamId}`);
+    document.get()
+        .then((doc:any) => {
+            if (!doc.exists){
+                return res.status(404).json({error: 'Scream not found'});
+            }
+            if (doc.data().userHandle !== req.user.handle){
+                return res.status(403).json({ error: 'Unauthorized'});
+            }
+            else {
+                return document.delete();
+            }
+        })
+        .then(() => {
+            res.json({ message: 'Scream deleted successfully'});
+        })
+        .catch((err:any) => {
+            console.log(err);
+            return res.status(500).json({error: err.code});
+        })
+};
