@@ -102,9 +102,9 @@ exports.getScream = (req:any, res:any) => {
         });
 };
 
-exports.commentOnScream = (req:any,res:any) => {
+exports.commentOnScream = (req:any, res:any) => {
     if (req.body.body.trim() === '')
-        return res.status(400).json({comment: 'Must not be empty'});
+        return res.status(400).json({ comment: 'Must not be empty' });
 
     const newComment = {
         body: req.body.body,
@@ -113,27 +113,26 @@ exports.commentOnScream = (req:any,res:any) => {
         userHandle: req.user.handle,
         userImage: req.user.imageUrl
     };
-
     console.log(newComment);
 
     db.doc(`/screams/${req.params.screamId}`)
         .get()
         .then((doc:any) => {
-            if (!doc.exists){
-                return res.status(404).json({error: 'Scream not found'});
+            if (!doc.exists) {
+                return res.status(404).json({ error: 'Scream not found' });
             }
-            return doc.ref.update({ commentCount: doc.data().commentCount + 1});
+            return doc.ref.update({ commentCount: doc.data().commentCount + 1 });
         })
         .then(() => {
-            res.json(newComment);
+            return db.collection('comments').add(newComment);
         })
         .then(() => {
             res.json(newComment);
         })
         .catch((err:any) => {
             console.log(err);
-            res.status(500).json({ error: 'Something went wrong' })
-        })
+            res.status(500).json({ error: 'Something went wrong' });
+        });
 };
 
 exports.likeScream = (req:any,res:any) => {

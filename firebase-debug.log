@@ -1,0 +1,20 @@
+[debug] [2020-04-07T11:36:54.010Z] ----------------------------------------------------------------------
+[debug] [2020-04-07T11:36:54.012Z] Command:       /usr/local/bin/node /usr/local/bin/firebase deploy --only functions
+[debug] [2020-04-07T11:36:54.013Z] CLI Version:   8.0.1
+[debug] [2020-04-07T11:36:54.013Z] Platform:      darwin
+[debug] [2020-04-07T11:36:54.013Z] Node Version:  v12.13.0
+[debug] [2020-04-07T11:36:54.014Z] Time:          Tue Apr 07 2020 13:36:54 GMT+0200 (Central European Summer Time)
+[debug] [2020-04-07T11:36:54.014Z] ----------------------------------------------------------------------
+[debug] [2020-04-07T11:36:54.014Z] 
+[debug] [2020-04-07T11:36:54.026Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2020-04-07T11:36:54.027Z] > authorizing via signed-in user
+[debug] [2020-04-07T11:36:54.027Z] [iam] checking project veitrafikk-kart4 for permissions ["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get"]
+[debug] [2020-04-07T11:36:54.030Z] >>> HTTP REQUEST POST https://cloudresourcemanager.googleapis.com/v1/projects/veitrafikk-kart4:testIamPermissions  
+ {"permissions":["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get"]}
+[debug] [2020-04-07T11:36:54.984Z] <<< HTTP RESPONSE 200 {"content-type":"application/json; charset=UTF-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","date":"Tue, 07 Apr 2020 11:36:20 GMT","server":"ESF","cache-control":"private","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","server-timing":"gfet4t7; dur=841","alt-svc":"quic=\":443\"; ma=2592000; v=\"46,43\",h3-Q050=\":443\"; ma=2592000,h3-Q049=\":443\"; ma=2592000,h3-Q048=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,h3-T050=\":443\"; ma=2592000","accept-ranges":"none","transfer-encoding":"chunked"}
+[info] 
+[info] === Deploying to 'veitrafikk-kart4'...
+[info] 
+[info] i  deploying functions
+[info] Running command: npm --prefix "$RESOURCE_DIR" run lint
+[info] Running command: npm --prefix "$RESOURCE_DIR" run build
