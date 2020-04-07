@@ -136,7 +136,7 @@ exports.getAuthenticatedUser = (req:any, res:any) => {
                 userData.likes.push(doc.data());
             });
             return db
-                .x'collection('notifications')
+                .collection('notifications')
                 .where('recipient', '==', req.user.handle)
                 .orderBy('createdAt', 'desc')
                 .limit(10)
