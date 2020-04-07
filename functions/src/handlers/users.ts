@@ -113,23 +113,46 @@ exports.getAuthenticatedUser = (req:any, res:any) => {
 
     interface IuserData {
         credentials:any,
-        likes:number[]
+        likes:any[],
+        notifications:any[]
     }
 
-    let userData:IuserData = {credentials:"",likes:[]}; //eksperimental
+    let userData:IuserData = {credentials:"",likes:[],notifications:[]}; //eksperimental
 
     db.doc(`/users/${req.user.handle}`).get()
         .then((doc:any) => {
-            if (doc.exists){
+
+            if (doc.exists) {
                 userData.credentials = doc.data();
-                return db.collection('likes')
+                return db
+                    .collection('likes')
                     .where('userHandle', '==', req.user.handle)
                     .get();
             }
         })
         .then((data:any) => {
+            userData.likes = [];
             data.forEach((doc:any) => {
-                userData.likes.push(doc.data)
+                userData.likes.push(doc.data());
+            });
+            return db
+                .x'collection('notifications')
+                .where('recipient', '==', req.user.handle)
+                .orderBy('createdAt', 'desc')
+                .limit(10)
+                .get();
+        })
+        .then((data:any) => {
+            data.forEach((doc:any) => {
+                userData.notifications.push({
+                    recipient: doc.data().recipient,
+                    sender: doc.data().sender,
+                    createdAt: doc.data().createdAt,
+                    screamId: doc.data().screamId,
+                    type: doc.data().type,
+                    read: doc.data().read,
+                    notificationId: doc.id
+                })
             });
             return res.json(userData);
         })

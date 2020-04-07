@@ -29,6 +29,9 @@ app.post('/user/image', fbAuth, uploadImage);
 app.post('/user', fbAuth, addUserDetails);
 app.get('/user', fbAuth, getAuthenticatedUser);
 
+//app.get('/user/:handle', getUserDetails);
+//app
+
 //screams
 app.get('/screams',getAllScreams);
 app.post('/scream', fbAuth, postOneScream);
