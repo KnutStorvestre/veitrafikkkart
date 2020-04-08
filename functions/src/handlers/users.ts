@@ -24,12 +24,11 @@ exports.login = (req:any, res:any) => {
             return res.json({ token });
         })
         .catch((err:any) => {
-            console.error(err);
-            if (err.code === 'auth/wrong-password')
-                return res.status(403).json({ general: 'Wrong credentials, please try again'});
-            else
-                return res.status(500).json({ error: err.code })
-        })
+            console.log(err);
+            return res
+                .status(403)
+                .json({general: 'Wrong credentials, please try again'});
+        });
 };
 
 exports.signup = (req:any,res:any) => {
@@ -86,7 +85,7 @@ exports.signup = (req:any,res:any) => {
                 return res.status(400).json({ email: 'Email already in use' })
             }
             else {
-                return res.status(500).json({ error: err.code})
+                return res.status(500).json({ general: 'Something went wrong, please try again'});
             }
         })
 };
