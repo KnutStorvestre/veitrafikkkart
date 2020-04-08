@@ -1,10 +1,6 @@
-//import {user} from "firebase-functions/lib/providers/auth";
-
 const config = require('../util/config');
 export {};
-
 const {db,firebase,admin} = require('../util/admin');
-
 const { validateSignupData, validateLoginData, reduceUserDetails } = require('../util/validators');
 
 exports.login = (req:any, res:any) => {
@@ -106,6 +102,48 @@ exports.addUserDetails = (req:any, res:any) => {
             console.log(err);
             return res.status(500).json({error: err.code});
         })
+};
+
+exports.getUserDetails = (req:any,res:any) => {
+    interface IUserData {
+        user:any,
+        screams:any[]
+    }
+
+    let userData:IUserData = {user:"",screams:[]} ;
+
+    db.doc(`/users/${req.params.handle}`)
+        .get()
+        .then((doc:any) => {
+            if (doc.exists){
+                userData.user = doc.data();
+                return db.collection('screams')
+                    .where('userHandle','==',req.params.handle)
+                    .orderBy('createdAt','desc')
+                    .get();
+            }
+            else
+                return res.status(404).json({ error: 'User not found' });
+        })
+        .then((data:any) => {
+            userData.screams = [];
+            data.forEach((doc:any) => {
+                userData.screams.push({
+                    body: doc.data().body,
+                    createdAt: doc.data().createdAt,
+                    userHandle: doc.data().userHandle,
+                    userImage: doc.data().userImage,
+                    likeCount: doc.data().likeCount,
+                    commentCount: doc.data().commentCount,
+                    screamId: doc.data().id
+                })
+            });
+            return res.json(userData);
+        })
+        .catch((err:any) => {
+            console.error(err);
+            return res.status(500).json({ error: err.code});
+        });
 };
 
 //Get own user details

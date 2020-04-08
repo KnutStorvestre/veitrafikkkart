@@ -5,7 +5,7 @@ const {db} = require('../util/admin');
 exports.getAllScreams = (req:any, res:any) => {
     db
         .collection('screams')
-        //.orderBy('createdAt','desc') denne er buggy
+        .orderBy('createdAt', 'desc')
         .get()
         .then((data:any) => {
             let screams:any = [];
@@ -65,7 +65,6 @@ exports.postOneScream = (req:any, res:any | undefined) => {
 };
 
 exports.getScream = (req:any, res:any) => {
-    //let screamData = {};
     interface IScreamData {
         screamId:any,
         comments:any[]

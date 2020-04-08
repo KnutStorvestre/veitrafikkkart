@@ -19,7 +19,9 @@ const {
     login,
     uploadImage,
     addUserDetails,
-    getAuthenticatedUser
+    getAuthenticatedUser,
+    getUserDetails
+    //markNotificationsRead
 } = require('./handlers/users');
 
 //user
@@ -29,8 +31,8 @@ app.post('/user/image', fbAuth, uploadImage);
 app.post('/user', fbAuth, addUserDetails);
 app.get('/user', fbAuth, getAuthenticatedUser);
 
-//app.get('/user/:handle', getUserDetails);
-//app
+app.get('/user/:handle', getUserDetails);
+//app.post('/notifications', fbAuth, markNotificationsRead);
 
 //screams
 app.get('/screams',getAllScreams);
