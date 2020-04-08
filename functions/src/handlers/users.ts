@@ -261,3 +261,19 @@ exports.uploadImage = (req:any, res:any) => {
     });
     busboy.end(req.rawBody);
 };
+
+exports.markNotificationsRead= (req:any,res:any) => {
+    let batch = db.batch();
+    req.body.forEach((notificationId: any) => {
+        const notification = db.doc(`/notifications/${notificationId}`);
+        batch.update(notification, {read: true});
+    })
+    batch.commit()
+        .then(() => {
+            return res.json({message: 'Notifications marked read'});
+        })
+        .catch((err: any) => {
+            console.error(err);
+            return res.status(500).json({error: err.code});
+        });
+};

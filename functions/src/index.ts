@@ -20,8 +20,8 @@ const {
     uploadImage,
     addUserDetails,
     getAuthenticatedUser,
-    getUserDetails
-    //markNotificationsRead
+    getUserDetails,
+    markNotificationsRead
 } = require('./handlers/users');
 
 //user
@@ -32,7 +32,7 @@ app.post('/user', fbAuth, addUserDetails);
 app.get('/user', fbAuth, getAuthenticatedUser);
 
 app.get('/user/:handle', getUserDetails);
-//app.post('/notifications', fbAuth, markNotificationsRead);
+app.post('/notifications', fbAuth, markNotificationsRead);
 
 //screams
 app.get('/screams',getAllScreams);
