@@ -19,7 +19,7 @@ exports.validateSignupData = (data:any) => {
 
     if (isEmpty(data.email))
         errors.email = 'Must not be empty';
-    if (isEmpty(data.password))
+    if (isEmail(data.password))
         errors.password = 'Must not be empty';
 
     if (isEmpty(data.password))
@@ -47,4 +47,28 @@ exports.validateLoginData = (data:any) => {
         errors,
         valid: Object.keys(errors).length === 0
     }
+};
+
+exports.reduceUserDetails = (data:any) => {
+
+    interface IuserDetails{
+        bio: string,
+        website: string
+        location: string
+    }
+
+    let userDetails:IuserDetails = {bio:"s",website:"s",location:"s"};
+
+    if (!isEmpty(data.bio.trim()))
+        userDetails.bio = data.bio;
+    if(!isEmpty(data.website.trim())){
+        if (data.website.trim().substr(0,4) !== 'http'){
+            userDetails.website = `http://${data.website.trim()}`;
+        }
+        else
+            userDetails.website = data.website;
+    }
+    if (!isEmpty(data.location.trim()))
+        userDetails.location = data.location;
+    return userDetails;
 };

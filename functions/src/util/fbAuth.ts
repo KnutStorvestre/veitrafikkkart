@@ -8,7 +8,7 @@ module.exports = (req:any, res:any, next:any) => {
     }
     else {
         console.log('No token found');
-        return res.status(403).json({ error: 'Unauthrozed'} )
+        return res.status(403).json({ error: 'Unauthrozed here'} )
     }
 
     admin
@@ -24,6 +24,7 @@ module.exports = (req:any, res:any, next:any) => {
         })
         .then((data:any) => {
             req.user.handle = data.docs[0].data().handle;
+            req.user.imageUrl = data.docs[0].data().imageUrl;
             return next();
         })
         .catch((err:any) => {
