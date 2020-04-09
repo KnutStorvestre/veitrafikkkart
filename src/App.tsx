@@ -1,11 +1,10 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
 
 function App() {
   return (
     <div className="App">
-      <input type="file"/>
+        <h1>Our app</h1>
     </div>
   );
 }
