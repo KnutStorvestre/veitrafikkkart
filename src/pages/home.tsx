@@ -1,9 +1,9 @@
 import React, {Component} from "react";
 
-class home extends Component<any, any>{
+class home extends Component<any, any> {
 
     render() {
-        return(
+        return (
             <div>
                 <h1>Home page</h1>
             </div>
