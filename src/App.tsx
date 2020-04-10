@@ -22,8 +22,13 @@ const theme = createMuiTheme({
             dark: '#008394',
             contrastText: '#ff'
         }
+        /*,
+        typography: {
+            useNextVariants: true
+        }
+         */
     }
-})
+});
 
 class App extends Component<any, any> {
     render() {
