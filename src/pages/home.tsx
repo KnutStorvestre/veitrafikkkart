@@ -15,7 +15,6 @@ class home extends Component<any, any> {
     }
 
     componentDidMount(): void {
-        //axios.get('https://europe-west1-veitrafikk-kart4.cloudfunctions.net/api/screams')
         axios.get('/screams')
             .then((res:any) => {
                 console.log(res.data)
@@ -28,11 +27,11 @@ class home extends Component<any, any> {
 
     render() {
         let recentScreamsMarkup = this.state.screams ? (
-            this.state.screams.map((scream:any) => <Scream scream={scream}/>)
+            this.state.screams.map((scream:any) => <Scream key={scream.screamId} scream={scream}/>)
         ) : <p>Loading...</p>
         return (
             //spacing is meant to be 16, but crashes if it's over 10
-            <Grid container spacing={2}>
+            <Grid container spacing={10}>
                 <Grid item sm={8} xs={12}>
                     {recentScreamsMarkup}
                 </Grid>
