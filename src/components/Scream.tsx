@@ -11,33 +11,30 @@ import makeStyles from "@material-ui/core/styles/makeStyles";
 import relativeTime from "dayjs/plugin/relativeTime";
 //import withStyles from "@material-ui/core/styles/withStyles";
 
-
-const useStyles = makeStyles({
+const styles:any = {
     card: {
         position: 'relative',
         display: 'flex',
         marginBottom: 20
     },
     image: {
-        minWidth: 200
+        minWidth: 200,
+        maxWidth:200,
+        maxHeight: 20,
+        paddingTop: '30.25%'
     },
     content: {
         padding: 25,
         objectFit: 'cover'
     }
-});
-
-interface IClasses {
-    card: any,
-    image: any,
-    content: any
-}
+};
 
 class Scream extends Component<any, any>{
     render () {
         dayjs.extend(relativeTime);
         const {
-            classes = useStyles,
+            //TODO: not in use
+            //const {classes} = this.props;
             scream: {
                 body,
                 createdAt,
@@ -50,13 +47,13 @@ class Scream extends Component<any, any>{
 
         console.log(userImage);
         return (
-            <Card style={{position: 'relative', display: 'flex', marginBottom: 20}}>
+            <Card style={styles.card}>
                 <CardMedia
                     image={userImage}
                     title={"Profile image"}
-                    style={{minWidth: 200, maxWidth:200, maxHeight: 20, paddingTop: '30.25%'}}
+                    style={styles.image}
                 />
-                <CardContent style={{padding: 25, objectFit: 'cover'}}>
+                <CardContent style={styles.content}>
                     <Typography variant={"h5"} component={Link} to={`/users/${userHandle}`}color={"primary"}>{userHandle}</Typography>
                     <Typography variant={"body2"} color={'textSecondary'}>{dayjs(createdAt).fromNow()}</Typography>
                     <Typography variant={"body1"}>{body}</Typography>
