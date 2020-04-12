@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import AppIcon from '../images/icon.png';
-//import axios from 'axios';
+import axios from 'axios';
 
 //MUI stuff
 import Grid from "@material-ui/core/Grid";
@@ -25,6 +25,11 @@ const styles:any = {
     button: {
         marginTop: 20,
     },
+    customError:{
+        color:'red',
+        fontSize: '0.8rem',
+        marginTop: 10,
+    }
 }
 
 class login extends Component<any, any>{
@@ -39,13 +44,30 @@ class login extends Component<any, any>{
         }
     }
 
-    //hides parts of url
     handleSubmit = (event:any) => {
+        //hides parts of url
         event.preventDefault();
         this.setState({
             loading: true
         })
-        //axios.post()
+        const userData = {
+            email: this.state.email,
+            password: this.state.password
+        }
+        axios.post('/login', userData)
+            .then((res:any) => {
+                console.log(res.data);
+                this.setState({
+                    loading: false
+                });
+                this.props.history.push('/');
+            })
+            .catch((err:any) => {
+                this.setState({
+                    errors: err.response.data,
+                    loading: false
+                })
+            })
     }
 
     handleChange = (event:any) => {
@@ -56,6 +78,7 @@ class login extends Component<any, any>{
 
     render() {
         const { classes } = this.props;
+        const { errors, loading } = this.state;
         return(
             //<Grid container className={classes.from}>
             <Grid container style={styles.form}>
@@ -67,9 +90,14 @@ class login extends Component<any, any>{
                     </Typography>
                     <form noValidate onSubmit={this.handleSubmit}>
                         <TextField id={"email"} name={"email"} type={"email"} label={"email"} style={styles.textField}
-                                   value={this.state.email} onChange={this.handleChange} fullWidth />
+                                   helperText={errors.email} error={errors.email ? true : false} value={this.state.email} onChange={this.handleChange} fullWidth />
                         <TextField id={"password"} name={"password"} type={"password"} label={"Password"} style={styles.textField}
-                                   value={this.state.password} onChange={this.handleChange} fullWidth />
+                                   helperText={errors.password} error={errors.password ? true : false} value={this.state.password} onChange={this.handleChange} fullWidth />
+                        {errors.general && (
+                            <Typography variant={"body2"} style={styles.customError}>
+                                {errors.general}
+                            </Typography>
+                        )}
                         <Button type={"submit"} variant={"contained"} color={"primary"} style={styles.button}>
                             Login
                         </Button>
