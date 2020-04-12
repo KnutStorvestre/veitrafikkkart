@@ -7,6 +7,8 @@ import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import TextField from "@material-ui/core/TextField/TextField";
 import Button from "@material-ui/core/Button";
+import {Link} from "react-router-dom";
+import {CircularProgress} from "@material-ui/core";
 
 
 const styles:any = {
@@ -29,8 +31,11 @@ const styles:any = {
         color:'red',
         fontSize: '0.8rem',
         marginTop: 10,
+    },
+    progress: {
+        position: 'absolute'
     }
-}
+};
 
 class login extends Component<any, any>{
 
@@ -98,9 +103,14 @@ class login extends Component<any, any>{
                                 {errors.general}
                             </Typography>
                         )}
-                        <Button type={"submit"} variant={"contained"} color={"primary"} style={styles.button}>
+                        <Button type={"submit"} variant={"contained"} color={"primary"} style={styles.button} disabled={loading}>
                             Login
+                            {loading && (
+                                <CircularProgress size={30} style={styles.progress}/>
+                            )}
                         </Button>
+                        <br/>
+                        <small>Don't have an account? Sign up <Link to={"/signup"}>here</Link></small>
                     </form>
                 </Grid>
                 <Grid item sm/>
@@ -109,6 +119,9 @@ class login extends Component<any, any>{
     }
 }
 
+//TODO CircularProgress left for the login
+
+//TODO
 //export default withStyles(useStyles)(login);
 export default login;
 
