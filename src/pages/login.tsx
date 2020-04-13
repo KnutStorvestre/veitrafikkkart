@@ -1,7 +1,6 @@
 import React, {Component} from "react";
 import AppIcon from '../images/icon.png';
 import axios from 'axios';
-
 //MUI stuff
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
@@ -11,7 +10,7 @@ import {Link} from "react-router-dom";
 import {CircularProgress} from "@material-ui/core";
 
 
-const styles:any = {
+const styles: any = {
     form: {
         textAlign: 'center',
     },
@@ -27,8 +26,8 @@ const styles:any = {
     button: {
         marginTop: 20,
     },
-    customError:{
-        color:'red',
+    customError: {
+        color: 'red',
         fontSize: '0.8rem',
         marginTop: 10,
     },
@@ -37,9 +36,9 @@ const styles:any = {
     }
 };
 
-class login extends Component<any, any>{
+class login extends Component<any, any> {
 
-    constructor(props:any) {
+    constructor(props: any) {
         super(props);
         this.state = {
             email: '',
@@ -49,7 +48,7 @@ class login extends Component<any, any>{
         }
     }
 
-    handleSubmit = (event:any) => {
+    handleSubmit = (event: any) => {
         //hides parts of url
         event.preventDefault();
         this.setState({
@@ -60,14 +59,15 @@ class login extends Component<any, any>{
             password: this.state.password
         }
         axios.post('/login', userData)
-            .then((res:any) => {
+            .then((res: any) => {
                 console.log(res.data);
+                localStorage.setItem('FBIdToken', `Bearer ${res.data.token}`);
                 this.setState({
                     loading: false
                 });
                 this.props.history.push('/');
             })
-            .catch((err:any) => {
+            .catch((err: any) => {
                 this.setState({
                     errors: err.response.data,
                     loading: false
@@ -75,16 +75,16 @@ class login extends Component<any, any>{
             })
     }
 
-    handleChange = (event:any) => {
+    handleChange = (event: any) => {
         this.setState({
             [event.target.name]: event.target.value
         })
     }
 
     render() {
-        const { classes } = this.props;
-        const { errors, loading } = this.state;
-        return(
+        const {classes} = this.props;
+        const {errors, loading} = this.state;
+        return (
             //<Grid container className={classes.from}>
             <Grid container style={styles.form}>
                 <Grid item sm/>
@@ -95,15 +95,19 @@ class login extends Component<any, any>{
                     </Typography>
                     <form noValidate onSubmit={this.handleSubmit}>
                         <TextField id={"email"} name={"email"} type={"email"} label={"email"} style={styles.textField}
-                                   helperText={errors.email} error={errors.email ? true : false} value={this.state.email} onChange={this.handleChange} fullWidth />
-                        <TextField id={"password"} name={"password"} type={"password"} label={"Password"} style={styles.textField}
-                                   helperText={errors.password} error={errors.password ? true : false} value={this.state.password} onChange={this.handleChange} fullWidth />
+                                   helperText={errors.email} error={errors.email ? true : false}
+                                   value={this.state.email} onChange={this.handleChange} fullWidth/>
+                        <TextField id={"password"} name={"password"} type={"password"} label={"Password"}
+                                   style={styles.textField}
+                                   helperText={errors.password} error={errors.password ? true : false}
+                                   value={this.state.password} onChange={this.handleChange} fullWidth/>
                         {errors.general && (
                             <Typography variant={"body2"} style={styles.customError}>
                                 {errors.general}
                             </Typography>
                         )}
-                        <Button type={"submit"} variant={"contained"} color={"primary"} style={styles.button} disabled={loading}>
+                        <Button type={"submit"} variant={"contained"} color={"primary"} style={styles.button}
+                                disabled={loading}>
                             Login
                             {loading && (
                                 <CircularProgress size={30} style={styles.progress}/>
