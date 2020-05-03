@@ -52,6 +52,21 @@ if (token){
 }
  */
 
+//let authenticated = false;
+
+function isAuthenticated() {
+    let authenticated:boolean;
+    const token = localStorage.FBIdToken;
+    if (token){
+        const decodedToken:any = jwtDecode(token);
+        if (decodedToken.exp * 1000 < Date.now()){
+            window.location.href = '/login';
+            return false;
+        }
+        return true;
+    }
+}
+
 class App extends Component<any, any> {
     render() {
         return (
@@ -62,8 +77,8 @@ class App extends Component<any, any> {
                         <div className="container">
                             <Switch>
                                 <Route exact path="/" component={home}/>
-                                <AuthRoute exact path="/login" component={login}/>
-                                <AuthRoute exact path="/signup" component={signUp}/>
+                                <AuthRoute exact path="/login" component={login} authenticated={isAuthenticated()}/>
+                                <AuthRoute exact path="/signup" component={signUp} authenticated={isAuthenticated()}    />
                             </Switch>
                         </div>
                     </Router>

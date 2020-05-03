@@ -123,9 +123,6 @@ class login extends Component<any, any> {
     }
 }
 
-//TODO CircularProgress left for the login
-
-//TODO
 //export default withStyles(useStyles)(login);
 export default login;
 

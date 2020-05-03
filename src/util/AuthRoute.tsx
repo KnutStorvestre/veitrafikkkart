@@ -8,14 +8,10 @@ interface IProps {
         path:string
 }
 
-interface Interface {
-
-}
-
 const AuthRoute = ({component: Component, authenticated, ...rest}:any) => (
     <Route
         {...rest}
-        render={(props:any) => authenticated === true ? <Redirect to='/'/> : <Component {...rest} />
+        render={(props:any) => authenticated === true ? <Redirect to='/'/> : <Component {...props} />
         }
         />
 );
