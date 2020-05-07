@@ -6,6 +6,7 @@ import jwtDecode from 'jwt-decode';
 import home from "./pages/home";
 import signUp from "./pages/signUp";
 import login from "./pages/login";
+import map from "./pages/map";
 //Components
 import Navbar from "./components/Navbar";
 import AuthRoute from "./util/AuthRoute"
@@ -50,7 +51,7 @@ if (token){
     else
         authenticated = true;
 }
- */
+*/
 
 //let authenticated = false;
 
@@ -77,8 +78,9 @@ class App extends Component<any, any> {
                         <div className="container">
                             <Switch>
                                 <Route exact path="/" component={home}/>
-                                <AuthRoute exact path="/login" component={login} authenticated={isAuthenticated()}/>
-                                <AuthRoute exact path="/signup" component={signUp} authenticated={isAuthenticated()}    />
+                                <AuthRoute exact path="/login" component={login} /*authenticated={isAuthenticated()}*//>
+                                <AuthRoute exact path="/signup" component={signUp} /*authenticated={isAuthenticated()}*//>
+                                <AuthRoute exact path="/map" component={map} /*authenticated={isAuthenticated()}*//>
                             </Switch>
                         </div>
                     </Router>
@@ -91,6 +93,6 @@ class App extends Component<any, any> {
 export default App;
 
 /*
-                                <AuthRoute exact path="/login" component={login} authenticated={authenticated}/>
-                                <AuthRoute exact path="/signup" component={signUp} authenticated={authenticated}/>
+<AuthRoute exact path="/login" component={login} authenticated={authenticated}/>
+<AuthRoute exact path="/signup" component={signUp} authenticated={authenticated}/>
  */

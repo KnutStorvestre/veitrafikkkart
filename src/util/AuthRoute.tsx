@@ -11,7 +11,7 @@ interface IProps {
 const AuthRoute = ({component: Component, authenticated, ...rest}:any) => (
     <Route
         {...rest}
-        render={(props:any) => authenticated === true ? <Redirect to='/'/> : <Component {...props} />
+        render={(props:any) => (authenticated === true) ? <Redirect to='/'/> : <Component {...props} />
         }
         />
 );
