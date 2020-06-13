@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import AppIcon from '../images/icon.png';
+import AppIcon from '../images/icon2.png';
 import axios from 'axios';
 //MUI stuff
 import Grid from "@material-ui/core/Grid";

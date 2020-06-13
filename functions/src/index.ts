@@ -12,7 +12,7 @@ const {
     likeScream,
     unlikeScream,
     deleteScream
-} = require('./handlers/screams');
+} = require('./handlers/posts');
 
 const {
     signup,
