@@ -24,11 +24,12 @@ const theme = createMuiTheme({
             contrastText: '#fff'
         },
         secondary: {
-            light: '#33c9dc',
-            main: '#00bcd4',
-            dark: '#008394',
-            contrastText: '#ff'
+            light: '#ffb74d',
+            main: '#ff9800',
+            dark: '#f57c00',
+            contrastText: '#fff'
         }
+
         /*,
         typography: {
             useNextVariants: true

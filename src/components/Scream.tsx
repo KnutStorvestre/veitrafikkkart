@@ -10,6 +10,7 @@ import Typography from "@material-ui/core/Typography";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import relativeTime from "dayjs/plugin/relativeTime";
 //import withStyles from "@material-ui/core/styles/withStyles";
+import green from '@material-ui/core/colors/green';
 
 const styles:any = {
     card: {
@@ -57,9 +58,9 @@ class Scream extends Component<any, any>{
                 <CardContent style={styles.content}>
                     <Typography variant={"h5"} component={Link} to={`/users/${userHandle}`}color={"primary"}>{userHandle}</Typography>
                     <Typography variant={"body2"} color={'textSecondary'}>{dayjs(createdAt).fromNow()}</Typography>
-                    <Typography variant={"subtitle1"} color={"primary"}>{"beskrivelse:"}</Typography>
+                    <Typography variant={"subtitle1"} color={"secondary"}>{"Beskrivelse:"}</Typography>
                     <Typography variant={"body1"}>{body}</Typography>
-                    <Typography variant={"subtitle1"} color={"primary"}>{"beskrivelse:"}</Typography>
+                    <Typography variant={"subtitle1"} color={"secondary"}>{"Lokasjon:"}</Typography>
                 </CardContent>
             </Card>
         )
