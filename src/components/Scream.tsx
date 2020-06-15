@@ -61,6 +61,7 @@ class Scream extends Component<any, any>{
                     <Typography variant={"subtitle1"} color={"secondary"}>{"Beskrivelse:"}</Typography>
                     <Typography variant={"body1"}>{body}</Typography>
                     <Typography variant={"subtitle1"} color={"secondary"}>{"Lokasjon:"}</Typography>
+                    <Typography variant={"body1"}>{location}</Typography>
                 </CardContent>
             </Card>
         )

@@ -16,7 +16,8 @@ exports.getAllScreams = (req:any, res:any) => {
                     createdAt: doc.data().createdAt,
                     commentCount: doc.data().commentCount,
                     likeCount: doc.data().likeCont,
-                    userImage: doc.data().userImage
+                    userImage: doc.data().userImage,
+                    location: doc.data().location,
                 })
             });
             return res.json(screams);
@@ -37,6 +38,7 @@ exports.postOneScream = (req:any, res:any | undefined) => {
         createdAt: new Date().toISOString(),
         likeCount: 0,
         commentCount: 0,
+        location: req.body.location
         //time: admin.firestore.Timestamp.fromDate(new Date())
     };
 
@@ -48,7 +50,7 @@ exports.postOneScream = (req:any, res:any | undefined) => {
         createdAt: new Date().toISOString(),
         likeCont: 0,
         commentCount: 0,
-        screamId: ""
+        screamId: "",
         //time: admin.firestore.Timestamp.fromDate(new Date())
     };
 
