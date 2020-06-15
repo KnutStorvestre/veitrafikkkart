@@ -19,7 +19,7 @@ class home extends Component<any, any> {
             .then((res:any) => {
                 console.log(res.data)
                 this.setState({
-                    screams: res.data
+                    screams: res.data,
                 })
             })
             .catch((err:any) => console.log(err));

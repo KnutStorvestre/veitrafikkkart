@@ -14,9 +14,9 @@ class Navbar extends Component<any, any> {
             <AppBar>
                 <Toolbar className={"nav-container"}>
                     <Button color="inherit" component={Link} to={"/login"}>Login</Button>
-                    <Button color="inherit" component={Link} to={"/"}>Home</Button>
-                    <Button color="inherit" component={Link} to={"/signup"}>Signup</Button>
-                    <Button color="inherit" component={Link} to={"/map"}>Map</Button>
+                    <Button color="inherit" component={Link} to={"/"}>Hjem</Button>
+                    <Button color="inherit" component={Link} to={"/signup"}>Registrering</Button>
+                    <Button color="inherit" component={Link} to={"/map"}>Kart</Button>
                 </Toolbar>
             </AppBar>
         )

@@ -42,7 +42,8 @@ class Scream extends Component<any, any>{
                 userHandle,
                 screamId,
                 likeCount,
-                commentCount
+                commentCount,
+                location,
             }} = this.props;
 
         console.log(userImage);
@@ -56,7 +57,9 @@ class Scream extends Component<any, any>{
                 <CardContent style={styles.content}>
                     <Typography variant={"h5"} component={Link} to={`/users/${userHandle}`}color={"primary"}>{userHandle}</Typography>
                     <Typography variant={"body2"} color={'textSecondary'}>{dayjs(createdAt).fromNow()}</Typography>
+                    <Typography variant={"subtitle1"} color={"primary"}>{"beskrivelse:"}</Typography>
                     <Typography variant={"body1"}>{body}</Typography>
+                    <Typography variant={"subtitle1"} color={"primary"}>{"beskrivelse:"}</Typography>
                 </CardContent>
             </Card>
         )
