@@ -95,22 +95,22 @@ class signUp extends Component<any, any> {
                 <Grid item sm>
                     <img src={AppIcon} alt={"monkey"} style={styles.image}/>
                     <Typography variant={"h2"} style={styles.pageTitle}>
-                        Signup
+                        Registrering
                     </Typography>
                     <form noValidate onSubmit={this.handleSubmit}>
-                        <TextField id={"email"} name={"email"} type={"email"} label={"Email"} style={styles.textField}
+                        <TextField id={"email"} name={"email"} type={"email"} label={"E-post"} style={styles.textField}
                                    helperText={errors.email} error={errors.email ? true : false}
                                    value={this.state.email} onChange={this.handleChange} fullWidth/>
-                        <TextField id={"password"} name={"password"} type={"password"} label={"Password"}
+                        <TextField id={"password"} name={"password"} type={"password"} label={"Passord"}
                                    style={styles.textField}
                                    helperText={errors.password} error={errors.password ? true : false}
                                    value={this.state.password} onChange={this.handleChange} fullWidth/>
                         <TextField id={"confirmPassword"} name={"confirmPassword"} type={"password"}
-                                   label={"Confirm Password"}
+                                   label={"Bekreft passord"}
                                    style={styles.textField}
                                    helperText={errors.confirmPassword} error={errors.confirmPassword ? true : false}
                                    value={this.state.confirmPassword} onChange={this.handleChange} fullWidth/>
-                        <TextField id={"handle"} name={"handle"} type={"text"} label={"Handle"}
+                        <TextField id={"handle"} name={"handle"} type={"text"} label={"Brukernavn"}
                                    style={styles.textField}
                                    helperText={errors.handle} error={errors.handle ? true : false}
                                    value={this.state.handle} onChange={this.handleChange} fullWidth/>
@@ -121,7 +121,7 @@ class signUp extends Component<any, any> {
                         )}
                         <Button type={"submit"} variant={"contained"} color={"primary"} style={styles.button}
                                 disabled={loading}>
-                            Signup
+                            Registrer
                             {loading && (
                                 <CircularProgress size={30} style={styles.progress}/>
                             )}
