@@ -94,10 +94,10 @@ class login extends Component<any, any> {
                         Login
                     </Typography>
                     <form noValidate onSubmit={this.handleSubmit}>
-                        <TextField id={"email"} name={"email"} type={"email"} label={"email"} style={styles.textField}
+                        <TextField id={"email"} name={"email"} type={"email"} label={"e-post"} style={styles.textField}
                                    helperText={errors.email} error={errors.email ? true : false}
                                    value={this.state.email} onChange={this.handleChange} fullWidth/>
-                        <TextField id={"password"} name={"password"} type={"password"} label={"Password"}
+                        <TextField id={"password"} name={"password"} type={"password"} label={"Passord"}
                                    style={styles.textField}
                                    helperText={errors.password} error={errors.password ? true : false}
                                    value={this.state.password} onChange={this.handleChange} fullWidth/>
@@ -114,7 +114,7 @@ class login extends Component<any, any> {
                             )}
                         </Button>
                         <br/>
-                        <small>Don't have an account? Sign up <Link to={"/signup"}>here</Link></small>
+                        <small>Hvis du ikke har en bruker kan du registrere deg <Link to={"/signup"}>her</Link></small>
                     </form>
                 </Grid>
                 <Grid item sm/>
