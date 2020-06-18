@@ -55,7 +55,7 @@ if (token){
 */
 
 //let authenticated = false;
-
+//Hvis brukeren allerede har logget inn skal han ikke ha tilgang til login og registreringsiden
 function isAuthenticated() {
     let authenticated:boolean;
     const token = localStorage.FBIdToken;
