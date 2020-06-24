@@ -219,6 +219,7 @@ exports.uploadImage = (req:any, res:any) => {
 
     busboy.on('file', (fieldname:any, file:any, filename:any, encoding:any, mimetype:any) => {
         console.log(fieldname, file, filename, encoding, mimetype);
+        //filen som lastetes opp kan bare være .jpeg eler .png
         if (mimetype !== 'image/jpeg' && mimetype !== 'image/png') {
             return res.status(400).json({ error: 'Wrong file type submitted' });
         }
