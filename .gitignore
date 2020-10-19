@@ -2,6 +2,7 @@
 
 #api-keys
 /src/util/config.ts
+functions/src/util/config.ts
 
 # dependencies
 /node_modules
